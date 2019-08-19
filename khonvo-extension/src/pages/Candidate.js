@@ -38,6 +38,7 @@ const Candidate = ({ currentJob, handleMenuChange }) => {
 
   useEffect(() => {
     calculateGraphValues();
+    getForecastValue();
   }, [candidateList]);
 
   useEffect(() => {
@@ -46,7 +47,6 @@ const Candidate = ({ currentJob, handleMenuChange }) => {
 
   useEffect(() => {
     fetchCandidateList();
-    getForecastValue();
   }, []);
 
   const calculateGraphValues = async _ => {
@@ -114,7 +114,6 @@ const Candidate = ({ currentJob, handleMenuChange }) => {
   };
 
   const handleStageChange = async (_id, stage) => {
-    console.log(_id, stage);
     let updatedList = await axios.post(`${apiUrl}/updateStage`, { _id, stage });
     setCandidateList(
       [

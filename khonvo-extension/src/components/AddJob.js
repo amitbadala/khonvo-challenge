@@ -1,12 +1,13 @@
 import React, { Fragment } from "react";
-import { Button, Statistic, Icon, Row, Col } from "antd";
+import { Button, Statistic, Icon, Row, Col, Badge } from "antd";
 
 const AddForm = ({
   jobDetails,
   addJobCard,
   handleOnChange,
   editJobMode,
-  handleMenuChange
+  handleMenuChange,
+  totalForecastAmount
 }) => {
   return (
     <Fragment>
@@ -14,8 +15,12 @@ const AddForm = ({
         <Col span={12}>
           <Statistic
             title="Forecast Amount"
-            value={1128}
-            prefix={<span>$</span>}
+            value={totalForecastAmount}
+            prefix={
+              <span>
+                <Badge color={"lime"} status="processing" />$
+              </span>
+            }
             valueStyle={{ color: "#fff" }}
           />
         </Col>

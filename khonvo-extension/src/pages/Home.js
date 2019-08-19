@@ -13,15 +13,21 @@ const Home = ({ handleMenuChange }) => {
     email: "",
     name: "",
     placementSum: "",
+    forecastValue: 0,
     _id: null
   };
   const [jobCards, setJobCards] = useState([]);
   const [jobDetails, setJobDetails] = useState(initialJobState);
   const [editJobMode, setEditJobMode] = useState(false);
+  const [totalForecastAmount, SetForecastAmount] = useState(0);
 
   useEffect(() => {
     fetchJobCards();
   }, []);
+
+  useEffect(() => {
+    updateForecastAmount();
+  }, [jobCards]);
 
   const handleOnChange = event => {
     const { name, value } = event.target;
@@ -31,6 +37,11 @@ const Home = ({ handleMenuChange }) => {
   const fetchJobCards = async () => {
     let jobs = await axios.get(`${apiUrl}/getJobCards`);
     setJobCards(jobs.data);
+  };
+
+  const updateForecastAmount = _ => {
+    let totalSum = jobCards.reduce((acc, el) => acc + el.forecastValue, 0);
+    SetForecastAmount(totalSum);
   };
 
   const addJobCard = async _ => {
@@ -52,6 +63,7 @@ const Home = ({ handleMenuChange }) => {
         </Col>
         <Col className="right split" span={12}>
           <AddJob
+            totalForecastAmount={totalForecastAmount}
             jobDetails={jobDetails}
             handleOnChange={handleOnChange}
             addJobCard={addJobCard}

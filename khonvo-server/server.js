@@ -123,10 +123,10 @@ stageWisePercentage[2] = 0.25;
 stageWisePercentage[3] = 0.75;
 stageWisePercentage[4] = 1;
 
-const updateJobForecastValue = (jobId, forecastValue) => {
-  let result = JobCard.findByIdAndUpdate(
-    { _id: jobId },
-    { $set: { forecastValue } },
+const updateJobForecastValue = async (_id, forecastValue) => {
+  let result = await JobCard.findByIdAndUpdate(
+    { _id },
+    { $set: { forecastValue: forecastValue } },
     { new: true }
   );
 };
@@ -141,7 +141,6 @@ app.get("/getForecastByJobId/:jobId", async (req, res) => {
       .populate("jobId");
     const value = stageWisePercentage[result.stage] * result.jobId.placementSum;
     updateJobForecastValue(jobId, value);
-
     return res.json({
       forecastValue: value
     });

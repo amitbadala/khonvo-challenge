@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "Hacker Tab",
-  "author": "Hu Chen",
+  "name": "Khonvo Challenge",
+  "author": "Amit Badala",
   "version": "1.0.1",
-  "description": "Replace new tab screen with GitHub trending projects.",
+  "description": "Candidate Management System",
   "icons": { "128": "icon_128.png" },
   "browser_action": {
     "default_icon": "icon.png",

@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Card, Icon } from "antd";
+import { Card, Icon, Empty } from "antd";
 
 const JobCard = ({ jobs, editJob }) => {
   return (
@@ -21,7 +21,7 @@ const JobCard = ({ jobs, editJob }) => {
             </div>
           ))
         ) : (
-          <h4>No Cards added yet</h4>
+          <Empty />
         )}
       </div>
     </Fragment>
