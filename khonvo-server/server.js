@@ -6,6 +6,7 @@ const JobCard = require("./model/JobCard");
 const Candidate = require("./model/Candidate");
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -122,6 +123,14 @@ stageWisePercentage[2] = 0.25;
 stageWisePercentage[3] = 0.75;
 stageWisePercentage[4] = 1;
 
+const updateJobForecastValue = (jobId, forecastValue) => {
+  let result = JobCard.findByIdAndUpdate(
+    { _id: jobId },
+    { $set: { forecastValue } },
+    { new: true }
+  );
+};
+
 app.get("/getForecastByJobId/:jobId", async (req, res) => {
   const { jobId } = req.params;
   try {
@@ -130,9 +139,11 @@ app.get("/getForecastByJobId/:jobId", async (req, res) => {
       .sort({ stage: -1 })
       .limit(1)
       .populate("jobId");
+    const value = stageWisePercentage[result.stage] * result.jobId.placementSum;
+    updateJobForecastValue(jobId, value);
+
     return res.json({
-      forecastValue:
-        stageWisePercentage[result.stage] * result.jobId.placementSum
+      forecastValue: value
     });
   } catch (err) {
     return res.json({ error: err.errmsg });
@@ -141,6 +152,6 @@ app.get("/getForecastByJobId/:jobId", async (req, res) => {
 
 //FORECASR CALCULATIONS END
 
-app.listen(5000, () => {
+app.listen(PORT, () => {
   console.log("Server Started");
 });

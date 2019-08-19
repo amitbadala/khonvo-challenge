@@ -5,7 +5,11 @@ let JobCard = new mongoose.Schema({
   description: String,
   name: String,
   email: String,
-  placementSum: Number
+  placementSum: Number,
+  forecastValue: {
+    type: Number,
+    default: 0
+  }
 });
 
 module.exports = mongoose.model("JobCard", JobCard);
