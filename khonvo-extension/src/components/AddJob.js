@@ -14,7 +14,7 @@ const AddForm = ({
       <Row className="job-forecast">
         <Col span={12}>
           <Statistic
-            title="Forecast Amount"
+            title={<span className="forecastTitle">Forecast Amount</span>}
             value={totalForecastAmount}
             prefix={
               <span>
@@ -26,7 +26,7 @@ const AddForm = ({
         </Col>
         <Col span={12}>
           <Statistic
-            title="Fixed Amount"
+            title={<span className="forecastTitle">Amount Payable</span>}
             value={1128}
             prefix={<span>$</span>}
             valueStyle={{ color: "#fff" }}

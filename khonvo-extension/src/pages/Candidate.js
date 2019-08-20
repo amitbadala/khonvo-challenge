@@ -14,16 +14,9 @@ const Candidate = ({ currentJob, handleMenuChange }) => {
     _id: null,
     jobId: currentJob._id || ""
   };
-  const initialGraphValues = {
-    stage0: 0,
-    stage1: 0,
-    stage2: 0,
-    stage3: 0,
-    stage4: 0
-  };
+
   const [candidate, setCandidate] = useState(initialCandidateState);
   const [candidateList, setCandidateList] = useState([]);
-  const [graphValues, setGraphValues] = useState(initialGraphValues);
   const [currentJobDetails, setCurrentJob] = useState({
     ...currentJob,
     forecastValue: 0
@@ -42,45 +35,45 @@ const Candidate = ({ currentJob, handleMenuChange }) => {
   }, [candidateList]);
 
   useEffect(() => {
-    addGraph(Object.values(graphValues));
-  }, [graphValues]);
-
-  useEffect(() => {
     fetchCandidateList();
   }, []);
 
-  const calculateGraphValues = async _ => {
-    console.log(candidateList, "checking");
-    await candidateList.forEach(candidate => {
+  const deleteCandidate = async (event, id) => {
+    event.stopPropagation();
+    await axios.delete(`${apiUrl}/deleteCandidate/${id}`);
+    fetchCandidateList();
+  };
+
+  const calculateGraphValues = _ => {
+    let test = Array(5).fill(0);
+    candidateList.forEach(candidate => {
       switch (candidate.stage) {
         case 0: {
-          setGraphValues({ ...graphValues, stage0: graphValues.stage0 + 1 });
+          test[0] = test[0] + 1;
           break;
         }
         case 1: {
-          setGraphValues({ ...graphValues, stage1: graphValues.stage1 + 1 });
+          test[1] = test[1] + 1;
           break;
         }
         case 2: {
-          setGraphValues({ ...graphValues, stage2: graphValues.stage2 + 1 });
+          test[2] = test[2] + 1;
           break;
         }
         case 3: {
-          setGraphValues({ ...graphValues, stage3: graphValues.stage3 + 1 });
+          test[3] = test[3] + 1;
           break;
         }
         case 4: {
-          setGraphValues({ ...graphValues, stage4: graphValues.stage4 + 1 });
+          test[4] = test[4] + 1;
           break;
         }
       }
     });
-    console.log(Object.values(graphValues));
-    addGraph(Object.values(graphValues));
+    addGraph(test);
   };
 
   const fetchCandidateList = async () => {
-    console.log("Checking");
     let candidates = await axios.get(
       `${apiUrl}/getCandidatesByJob/${candidate.jobId}`
     );
@@ -95,7 +88,6 @@ const Candidate = ({ currentJob, handleMenuChange }) => {
       ...currentJobDetails,
       forecastValue: result.data.forecastValue
     });
-    console.log(currentJobDetails, "currentJob");
   };
 
   const handleCandidateOnChange = event => {
@@ -104,7 +96,6 @@ const Candidate = ({ currentJob, handleMenuChange }) => {
   };
 
   const addCandidate = async _ => {
-    // setCandidate({ ...candidate, jobId: "5d59115d0773d12b00bb62f9" });
     let result = await axios.post(`${apiUrl}/addCandidate`, candidate);
     message.success("Added Candidate");
     if (result) {
@@ -156,7 +147,7 @@ const Candidate = ({ currentJob, handleMenuChange }) => {
     };
 
     var ctx = document.getElementById("myChart").getContext("2d");
-    var myDoughnutChart = new Chart(ctx, {
+    new Chart(ctx, {
       type: "doughnut",
       data: data,
       options: options
@@ -191,6 +182,7 @@ const Candidate = ({ currentJob, handleMenuChange }) => {
           <CandidateList
             candidateList={candidateList}
             handleStageChange={handleStageChange}
+            deleteCandidate={deleteCandidate}
           />
         </Col>
         <Col className="right split" span={12}>

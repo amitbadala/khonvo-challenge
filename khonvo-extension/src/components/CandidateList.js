@@ -1,13 +1,17 @@
 import React from "react";
-import { Collapse, Steps } from "antd";
+import { Collapse, Steps, Icon } from "antd";
 const { Panel } = Collapse;
 
 const { Step } = Steps;
 
-const CandidateList = ({ candidateList, handleStageChange }) => {
+const CandidateList = ({
+  candidateList,
+  handleStageChange,
+  deleteCandidate
+}) => {
   return (
     <div>
-      <Collapse defaultActiveKey={["1"]}>
+      <Collapse accordion>
         {candidateList.length > 0
           ? candidateList.map((candidate, index) => (
               <Panel
@@ -28,6 +32,10 @@ const CandidateList = ({ candidateList, handleStageChange }) => {
                   <Step title="Offer" value={75} />
                   <Step title="Accepted" value={75} />
                 </Steps>
+                <Icon
+                  type="delete"
+                  onClick={event => deleteCandidate(event, candidate._id)}
+                />
               </Panel>
             ))
           : null}

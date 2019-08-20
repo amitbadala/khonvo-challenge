@@ -45,9 +45,19 @@ const Home = ({ handleMenuChange }) => {
   };
 
   const addJobCard = async _ => {
-    await axios.post(`${apiUrl}/addJobCard`, jobDetails);
+    if (editJobMode) {
+      await axios.post(`${apiUrl}/updateJobCard`, jobDetails);
+      setEditJobMode(false);
+    } else {
+      await axios.post(`${apiUrl}/addJobCard`, jobDetails);
+    }
     fetchJobCards();
     setJobDetails(initialJobState);
+  };
+
+  const deleteJobCard = async id => {
+    await axios.delete(`${apiUrl}/${id}`);
+    fetchJobCards();
   };
 
   const editJob = async job => {
@@ -59,7 +69,12 @@ const Home = ({ handleMenuChange }) => {
     <div>
       <Row className="customRow">
         <Col className="left split" span={12}>
-          <JobCard jobs={jobCards} editJob={editJob} />
+          <JobCard
+            jobs={jobCards}
+            editJob={editJob}
+            handleMenuChange={handleMenuChange}
+            deleteJobCard={deleteJobCard}
+          />
         </Col>
         <Col className="right split" span={12}>
           <AddJob

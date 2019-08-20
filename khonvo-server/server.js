@@ -4,20 +4,20 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const JobCard = require("./model/JobCard");
 const Candidate = require("./model/Candidate");
+const { PORT, MONGO_CONNECTION_STRING } = require("./config");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+// const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const dbUrl =
-  "mongodb+srv://admin:FRsojwU0AjxQyWhS@scryptonian-ghufh.mongodb.net/test?retryWrites=true&w=majority";
-const localDbUrl = "mongodb://localhost:27017/cms";
-
 mongoose
-  .connect(dbUrl, { useNewUrlParser: true, useFindAndModify: false })
+  .connect(MONGO_CONNECTION_STRING, {
+    useNewUrlParser: true,
+    useFindAndModify: false
+  })
   .then(() => {
     console.log("Mongoose Connected");
   });
@@ -64,10 +64,10 @@ app.post("/updateJobCard", async (req, res) => {
 app.delete("/:id", async (req, res) => {
   const _id = req.params.id;
   try {
-    let result = JobCard.findByIdAndRemove({ _id });
+    let result = await JobCard.findByIdAndDelete({ _id });
     return res.json(result);
   } catch (err) {
-    return res.send({ error: err.errmsg });
+    return res.send({ error: err });
   }
 });
 
@@ -112,6 +112,16 @@ app.post("/updateStage", async (req, res) => {
   }
 });
 
+app.delete("/deleteCandidate/:id", async (req, res) => {
+  const _id = req.params.id;
+  try {
+    let result = await Candidate.findByIdAndDelete({ _id });
+    return res.json(result);
+  } catch (err) {
+    return res.send({ error: err });
+  }
+});
+
 // CANDIDATES API END
 
 //FORECAST CALCULATIONS START
@@ -124,7 +134,7 @@ stageWisePercentage[3] = 0.75;
 stageWisePercentage[4] = 1;
 
 const updateJobForecastValue = async (_id, forecastValue) => {
-  let result = await JobCard.findByIdAndUpdate(
+  await JobCard.findByIdAndUpdate(
     { _id },
     { $set: { forecastValue: forecastValue } },
     { new: true }
@@ -149,7 +159,7 @@ app.get("/getForecastByJobId/:jobId", async (req, res) => {
   }
 });
 
-//FORECASR CALCULATIONS END
+//FORECAST CALCULATIONS END
 
 app.listen(PORT, () => {
   console.log("Server Started");
